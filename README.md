@@ -2,7 +2,7 @@
 
 A production-ready Change Data Capture (CDC) pipeline that streams Oracle database changes to Apache Kafka using OpenLogReplicator and Debezium.
 
-![Architecture Diagram](img.png)
+![Architecture Diagram](img_1.png)
 
 ## Table of Contents
 
