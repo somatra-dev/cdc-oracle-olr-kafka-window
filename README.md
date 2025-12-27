@@ -1,4 +1,4 @@
-# Oracle CDC with OpenLogReplicator, Debezium, and Kafka
+# Oracle CDC with OpenLogReplicator, Debezium, and Kafka(On Window)
 
 A production-ready Change Data Capture (CDC) pipeline that streams Oracle database changes to Apache Kafka using OpenLogReplicator and Debezium.
 
