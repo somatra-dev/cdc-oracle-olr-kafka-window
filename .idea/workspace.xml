@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d6f3aa89-fd46-4db6-b4cc-5b239d7bade8" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/d5573bb8-e1f9-49ed-8765-8967ab445ed9.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/d5573bb8-e1f9-49ed-8765-8967ab445ed9.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/data_source_mapping.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/data_source_mapping.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/olr-log/OpenLogReplicator.err" beforeDir="false" afterPath="$PROJECT_DIR$/olr-log/OpenLogReplicator.err" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,7 +33,7 @@
     &quot;SHELLCHECK.PATH&quot;: &quot;/home/oogway/.local/share/JetBrains/IntelliJIdea2025.3/Shell Script/shellcheck&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/oogway/Documents/Spring-Mic/Debezuim-Kafka/cdc-postgres-to-elastic&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/oogway/Documents/Spring-Mic/Debezuim-Kafka/cdc-postgres-to-mongodb&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
@@ -67,7 +67,9 @@
       <workItem from="1766365220315" duration="12413000" />
       <workItem from="1766399917615" duration="313000" />
       <workItem from="1766459577277" duration="6045000" />
-      <workItem from="1766492411811" duration="4750000" />
+      <workItem from="1766492411811" duration="12660000" />
+      <workItem from="1766509621492" duration="612000" />
+      <workItem from="1766534138536" duration="5760000" />
     </task>
     <servers />
   </component>

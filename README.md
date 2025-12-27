@@ -1,4 +1,4 @@
-# Oracle CDC with OpenLogReplicator, Debezium, and Kafka (On Linux)
+# Oracle CDC with OpenLogReplicator, Debezium, and Kafka
 
 A production-ready Change Data Capture (CDC) pipeline that streams Oracle database changes to Apache Kafka using OpenLogReplicator and Debezium.
 
@@ -9,10 +9,12 @@ A production-ready Change Data Capture (CDC) pipeline that streams Oracle databa
 - [Prerequisites](#prerequisites)
 - [Architecture Overview](#architecture-overview)
 - [Quick Start](#quick-start)
+- [Quick Start (Windows)](#quick-start-windows)
 - [Configuration](#configuration)
   - [Directory Setup](#1-directory-setup)
   - [Oracle and OpenLogReplicator Setup](#2-oracle-and-openlogreplicator-setup)
   - [Kafka Ecosystem Setup](#3-kafka-ecosystem-setup)
+- [Windows Permission Setup](#windows-permission-setup)
 - [Connector Configuration](#connector-configuration)
 - [Verification](#verification)
 - [Troubleshooting](#troubleshooting)
@@ -55,6 +57,28 @@ docker compose -f docker-compose-main.yml up -d
 
 # 5. Access Kafka UI
 open http://localhost:18000
+```
+
+## Quick Start (Windows)
+
+```powershell
+# 1. Create Docker network
+docker network create debezium-net
+
+# 2. Create required directories (PowerShell)
+New-Item -ItemType Directory -Force -Path olr-checkpoint, olr-log, scripts-db, scripts
+
+# 3. Start Oracle and OpenLogReplicator
+docker compose -f docker-compose-olr.yml up -d
+
+# 4. Configure permissions for OLR (Run as Administrator)
+.\scripts-db\permission.bat
+
+# 5. Start Kafka ecosystem
+docker compose -f docker-compose-main.yml up -d
+
+# 6. Access Kafka UI
+Start-Process "http://localhost:18000"
 ```
 
 ---
@@ -793,6 +817,76 @@ networks:
 ```
 
 ---
+
+## Windows Permission Setup
+
+OpenLogReplicator requires read access to Oracle redo logs and archive logs. On Windows, use the provided PowerShell script to configure permissions.
+
+### Permission Scripts
+
+| File | Description |
+|------|-------------|
+| `scripts-db/permission.ps1` | PowerShell script for Windows permission management |
+| `scripts-db/permission.bat` | Batch wrapper for easy execution |
+| `scripts-db/permission.sh` | Bash script for Linux (original) |
+
+### Usage (Windows)
+
+**Option 1: Using the batch file (Recommended)**
+
+```cmd
+# Right-click and "Run as administrator"
+scripts-db\permission.bat
+```
+
+**Option 2: Using PowerShell directly**
+
+```powershell
+# Run as Administrator
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
+.\scripts-db\permission.ps1
+```
+
+### PowerShell Script Parameters
+
+| Parameter | Description |
+|-----------|-------------|
+| `-StartDaemon` | Set initial permissions and start background permission fixer |
+| `-StopDaemon` | Stop the background permission fixer |
+| `-IntervalSeconds N` | Set permission check interval (default: 30 seconds) |
+
+**Examples:**
+
+```powershell
+# Start with custom interval (60 seconds)
+.\scripts-db\permission.ps1 -StartDaemon -IntervalSeconds 60
+
+# Stop the background daemon
+.\scripts-db\permission.ps1 -StopDaemon
+```
+
+### Configuration
+
+Edit the paths in `permission.ps1` to match your Docker setup:
+
+```powershell
+# For Docker Desktop with native Windows paths:
+$OracleDataPath = "C:\oracle\oradata\ORCLCDB"
+$OracleFRAPath = "C:\oracle\fast_recovery_area"
+
+# For Docker Desktop with WSL2 backend:
+$OracleDataPath = "\\wsl$\docker-desktop-data\data\docker\volumes\oracle_data_cdc\_data\ORCLCDB"
+$OracleFRAPath = "\\wsl$\docker-desktop-data\data\docker\volumes\oracle_fra_cdc\_data"
+```
+
+### How It Works
+
+1. **Initial Permissions**: Grants read access to Oracle data directories
+2. **Background Daemon**: Creates a Windows Scheduled Task that runs every 30 seconds to fix permissions on newly created archive logs
+3. **Archive Log Fix**: Oracle creates new archive logs with restrictive permissions; the daemon continuously updates them for OLR access
+
+---
+
 ## Connector Configuration
 ### Source Connector
 ```url: POST http://localhost:8083/connectors```
@@ -885,6 +979,29 @@ Check Kafka UI at `http://localhost:18000` to verify messages are flowing.
 | OpenLogReplicator cannot connect | Verify Oracle is healthy and permissions are set correctly |
 | No messages in Kafka | Check connector status via Kafka Connect REST API |
 | Schema Registry errors | Ensure Kafka brokers are running before Schema Registry starts |
+
+### Windows-Specific Issues
+
+| Issue | Solution |
+|-------|----------|
+| Permission script fails | Run PowerShell/CMD as Administrator |
+| Scheduled task not created | Check Windows Task Scheduler for errors; ensure SYSTEM account has permissions |
+| Path not found errors | Update `$OracleDataPath` and `$OracleFRAPath` in `permission.ps1` to match your Docker volume paths |
+| WSL path access denied | Use `\\wsl$\` prefix for WSL2 Docker volumes |
+| Execution policy error | Run `Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process` before running the script |
+
+### Finding Docker Volume Paths (Windows)
+
+```powershell
+# List Docker volumes
+docker volume ls
+
+# Inspect volume to find mount point
+docker volume inspect oracle_data_cdc
+
+# For WSL2 backend, volumes are typically at:
+# \\wsl$\docker-desktop-data\data\docker\volumes\<volume_name>\_data
+```
 
 ### Useful Commands
 

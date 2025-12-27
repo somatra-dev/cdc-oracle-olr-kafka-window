@@ -43,7 +43,7 @@ services:
     container_name: openlogreplicator
     hostname: openlogreplicator
     restart: unless-stopped
-    user: "1000:1000"
+    user: "54321:54321"
     command: >
       /opt/OpenLogReplicator/OpenLogReplicator
       --config /opt/OpenLogReplicator/scripts/OpenLogReplicator.json
@@ -53,8 +53,8 @@ services:
       - "9000:9000"
     volumes:
       - ./scripts:/opt/OpenLogReplicator/scripts:ro
-      - ./olr-checkpoint:/opt/OpenLogReplicator/checkpoint
-      - ./olr-log:/opt/OpenLogReplicator/log
+      - olr_checkpoint:/opt/OpenLogReplicator/checkpoint
+      - olr_log:/opt/OpenLogReplicator/log
       - oracle_data_cdc:/opt/oracle/oradata:ro
       - oracle_fra_cdc:/opt/oracle/fast_recovery_area:ro
     depends_on:
